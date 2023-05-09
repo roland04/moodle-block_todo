@@ -15,22 +15,20 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template block_todo/main
+    @template block_todo/local/todomessage
 
     This template renders the main content area for the TODO block.
 
     Example context (json):
-    {}
+    {
+        "message": "This is a message"
+    }
 }}
-<div id="block-todo-{{uniqid}}-{{instanceid}}" class="block-todo" data-for="todo-app">
-    {{> block_todo/local/todoinput }}
-    <div data-for="todo-list-wrapper">
-        <div class="d-flex justify-content-center">{{> core/loading }}</div>
-    </div>
-    {{> block_todo/local/todomessage}}
+<div id="block-todo-message-{{uniqid}}-{{id}}" class="px-2">
+    <span data-for="todo-message">{{message}}</span>
 </div>
 {{#js}}
-require(['block_todo/main'], function(component) {
-    component.init('#block-todo-{{uniqid}}-{{instanceid}}');
+require(['block_todo/local/components/todomessage'], function(component) {
+    component.init('#block-todo-message-{{uniqid}}-{{id}}');
 });
 {{/js}}

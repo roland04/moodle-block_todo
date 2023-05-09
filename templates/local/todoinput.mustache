@@ -15,22 +15,23 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template block_todo/main
+    @template block_todo/local/todoinput
 
     This template renders the main content area for the TODO block.
 
     Example context (json):
     {}
 }}
-<div id="block-todo-{{uniqid}}-{{instanceid}}" class="block-todo" data-for="todo-app">
-    {{> block_todo/local/todoinput }}
-    <div data-for="todo-list-wrapper">
-        <div class="d-flex justify-content-center">{{> core/loading }}</div>
+<div id="block-todo-input-{{uniqid}}" data-for="todo-input">
+    <div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="New task" aria-label="New task" data-for="todo-input">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" data-action="addtodo">{{#str}} add, core {{/str}}</button>
+        </div>
     </div>
-    {{> block_todo/local/todomessage}}
 </div>
 {{#js}}
-require(['block_todo/main'], function(component) {
-    component.init('#block-todo-{{uniqid}}-{{instanceid}}');
+require(['block_todo/local/components/todoinput'], function(component) {
+    component.init('#block-todo-input-{{uniqid}}');
 });
 {{/js}}

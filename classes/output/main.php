@@ -39,7 +39,10 @@ class main implements renderable, templatable {
      * @param int $instanceid This TODO block instance id.
      */
     public function __construct(int $instanceid) {
+        global $PAGE;
+
         $this->instanceid = $instanceid;
+        $PAGE->requires->js_call_amd('block_todo/local/todo', 'init', [$this->instanceid]);
     }
 
     /**

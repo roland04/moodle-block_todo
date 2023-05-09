@@ -16,7 +16,7 @@
 /**
  * Todo list reactive component.
  *
- * @module     block_todo/main
+ * @module     block_todo/local/components/todomessage
  * @copyright  2023 Mikel Martín <mikel@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,9 +29,9 @@ export default class extends BaseComponent {
      * Create the todo list component.
      */
     create() {
-        this.name = 'todolist-app';
+        this.name = 'todomessage';
         this.selectors = {
-            TODOLIST: `[data-for='todo-list-wrapper']`,
+            TODOMESSAGE: `[data-for='todo-message']`,
         };
     }
 
@@ -56,30 +56,39 @@ export default class extends BaseComponent {
      * @param {object} state the initial state
      */
     stateReady(state) {
-        this._loadTodoApp({state});
+        this._refreshTodoMessage({state});
     }
 
     /**
-     * Load the Todo app component.
+     * Define the component watchers.
      *
-     * @param {object} param
-     * @param {object} param.state the state object
+     * @returns {Array} the list of watchers
      */
-    async _loadTodoApp({state}) {
-        // Load TODO list initial state.
-        const data = {
-            todos: [],
-        };
-        state.todos.forEach(todo => {
-            data.todos.push({...todo});
-        });
-        data.hastodos = (data.todos.length > 0);
+    getWatchers() {
+        return [
+            {watch: `todos:updated`, handler: this._refreshTodoMessage},
+            {watch: `todos:deleted`, handler: this._refreshTodoMessage},
+            {watch: `todos:created`, handler: this._refreshTodoMessage},
+        ];
+    }
 
-        // Render the component.
-        const todoListContainer = this.getElement(this.selectors.TODOLIST);
-        if (!todoListContainer) {
-            throw new Error('Missing todo-list-wrapper container.');
+    /**
+     * Refresh the todo element.
+     *
+     * @param {object} param the watcher param
+     * @param {object} param.state the state
+     */
+    _refreshTodoMessage({state}) {
+        // TODO: Better way to do this?
+        const todosLeft = [...state.todos].filter(todo => !todo[1].done) ?? [];
+        // TODO: Get the strings from the language pack.
+        const messageContainer = this.getElement(this.selectors.TODOMESSAGE);
+        if (todosLeft.length > 1) {
+            messageContainer.innerHTML = 'Still a lot to do 😅';
+        } else if (todosLeft.length === 1) {
+            messageContainer.innerHTML = 'You are almost there! 🏁';
+        } else {
+            messageContainer.innerHTML = 'Nothing left. Time to relax 🏖️';
         }
-        await this.renderComponent(todoListContainer, 'block_todo/local/todolist', data);
     }
 }

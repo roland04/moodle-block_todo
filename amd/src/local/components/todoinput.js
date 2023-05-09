@@ -14,9 +14,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Todo list reactive component.
+ * Todo input reactive component.
  *
- * @module     block_todo/main
+ * @module     block_todo/local/components/todoinput
  * @copyright  2023 Mikel Martín <mikel@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,12 +26,13 @@ import {todoReactive} from 'block_todo/local/todo';
 
 export default class extends BaseComponent {
     /**
-     * Create the todo list component.
+     * Create the todo input component.
      */
     create() {
-        this.name = 'todolist-app';
+        this.name = 'todoinput';
         this.selectors = {
-            TODOLIST: `[data-for='todo-list-wrapper']`,
+            ADDBUTTON: `[data-action='addtodo']`,
+            INPUTTEXT: `[data-for='todo-input']`,
         };
     }
 
@@ -52,34 +53,26 @@ export default class extends BaseComponent {
 
     /**
      * Initial state ready method.
-     *
-     * @param {object} state the initial state
      */
-    stateReady(state) {
-        this._loadTodoApp({state});
+    stateReady() {
+        this.addEventListener(this.getElement(this.selectors.ADDBUTTON), 'click', this._addTodoListener);
+        this.addEventListener(this.getElement(this.selectors.INPUTTEXT), 'keyup', this._addTodoListener);
     }
 
     /**
-     * Load the Todo app component.
-     *
-     * @param {object} param
-     * @param {object} param.state the state object
+     * Add a new todo.
+     * @param {Event} event the event
      */
-    async _loadTodoApp({state}) {
-        // Load TODO list initial state.
-        const data = {
-            todos: [],
-        };
-        state.todos.forEach(todo => {
-            data.todos.push({...todo});
-        });
-        data.hastodos = (data.todos.length > 0);
-
-        // Render the component.
-        const todoListContainer = this.getElement(this.selectors.TODOLIST);
-        if (!todoListContainer) {
-            throw new Error('Missing todo-list-wrapper container.');
+    _addTodoListener(event) {
+        event.preventDefault();
+        if (event.type === 'keyup' && event.keyCode !== 13) {
+            return;
         }
-        await this.renderComponent(todoListContainer, 'block_todo/local/todolist', data);
+        const input = this.getElement(this.selectors.INPUTTEXT);
+        if (input.value.length === 0) {
+            return;
+        }
+        this.reactive.dispatch('addTodo', {name: input.value, done: false});
+        input.value = '';
     }
 }

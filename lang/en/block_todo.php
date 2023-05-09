@@ -25,7 +25,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'TODO block';
-$string['privacy:metadata'] = 'TODO block does not store any personal data';
-$string['todo:myaddinstance'] = 'Add a new TODO block to the My dashboard';
-$string['todo:addinstance'] = 'Add a new TODO block';
+$string['almostthere'] = 'You are almost there! 🏁';
+$string['notodos'] = 'Nothing left. Time to relax 🏖️';
+$string['pluginname'] = 'To-Do list';
+$string['privacy:metadata'] = 'To-Do list block does not store any personal data';
+$string['todo:myaddinstance'] = 'Add a new "To-Do list" block to the My dashboard';
+$string['todo:addinstance'] = 'Add a new "To-Do list" block';
+$string['toomanytodos'] = 'Still a lot to do 😅';

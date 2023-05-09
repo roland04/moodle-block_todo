@@ -16,7 +16,7 @@
 /**
  * Todo list reactive component.
  *
- * @module     block_todo/main
+ * @module     block_todo/local/components/todolist
  * @copyright  2023 Mikel Martín <mikel@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,9 +29,10 @@ export default class extends BaseComponent {
      * Create the todo list component.
      */
     create() {
-        this.name = 'todolist-app';
+        this.name = 'todolist';
         this.selectors = {
-            TODOLIST: `[data-for='todo-list-wrapper']`,
+            TODOLIST: `[data-for='todo-list']`,
+            TODOS: `[data-for='todos']`,
         };
     }
 
@@ -51,35 +52,34 @@ export default class extends BaseComponent {
     }
 
     /**
-     * Initial state ready method.
+     * Define the component watchers.
      *
-     * @param {object} state the initial state
+     * @returns {Array} the list of watchers
      */
-    stateReady(state) {
-        this._loadTodoApp({state});
+    getWatchers() {
+        return [
+            {watch: `todos:created`, handler: this._addTodo},
+        ];
     }
 
     /**
-     * Load the Todo app component.
+     * Add a todo element.
      *
-     * @param {object} param
-     * @param {object} param.state the state object
+     * @param {object} param the watcher param
+     * @param {object} param.element the todo structure to refresh
      */
-    async _loadTodoApp({state}) {
-        // Load TODO list initial state.
-        const data = {
-            todos: [],
-        };
-        state.todos.forEach(todo => {
-            data.todos.push({...todo});
-        });
-        data.hastodos = (data.todos.length > 0);
-
+    async _addTodo({element}) {
+        // Create a fake element to render the component.
+        const fakeElement = document.createElement('li');
+        fakeElement.classList.add('d-none');
+        this.getElement(this.selectors.TODOS).appendChild(fakeElement);
         // Render the component.
-        const todoListContainer = this.getElement(this.selectors.TODOLIST);
-        if (!todoListContainer) {
-            throw new Error('Missing todo-list-wrapper container.');
-        }
-        await this.renderComponent(todoListContainer, 'block_todo/local/todolist', data);
+        const data = { // TODO: Better way to create data?
+            'id': element.id,
+            'name': element.name,
+            'done': false,
+        };
+        const newcomponent = await this.renderComponent(fakeElement, 'block_todo/local/todolistitem', data);
+        fakeElement.parentNode.replaceChild(newcomponent.getElement(), fakeElement);
     }
 }
