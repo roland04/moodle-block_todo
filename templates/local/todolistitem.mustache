@@ -34,14 +34,14 @@
     data-for="todo"
     data-id="{{id}}">
 
-    <div class="custom-control custom-checkbox">
-        <input type="checkbox" class="custom-control-input" id="customCheck{{id}}" data-for="todo-check" {{#done}}checked{{/done}}>
-        <label class="custom-control-label todo-name" for="customCheck{{id}}" data-for="todo-name">
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="customCheck{{id}}" data-for="todo-check" {{#done}}checked{{/done}}>
+        <label class="form-check-label todo-name" for="customCheck{{id}}" data-for="todo-name">
             {{name}}
         </label>
     </div>
 
-    <button class="btn btn-link px-0 mr-0 icon-no-margin"
+    <button class="btn btn-link px-0 me-0 icon-no-margin"
             data-action="delete-todo"
             title="Delete todo"
             aria-label="delete todo">
